@@ -1,1 +1,625 @@
 
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> TV4WAP LIVE4WAP WAPTVGO</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <style>
+        /* --- 1. Root Colors --- */
+        :root {
+            --bg-primary: #F7F7F7; /* Lighter page background */
+            --bg-secondary: #F7F7F7; /* Tab content background */
+            --header-bg: gold; /* NEW: Header background is Black */
+            
+            /* CHANNEL COLORS - Deep Indigo with Gold Text */
+            --channel-bg: white; /* Deep attractive Indigo/Dark Blue */
+            --link-color: black; 
+            --link-hover: #fff;
+            --channel-border: #3692e0; 
+            
+            /* NAVIGATION COLORS */
+            --nav-bg: #333; 
+            --nav-icon-color: #ccc;
+            --nav-icon-active: gold;
+            
+            /* PLAYING CHANNEL COLORS - Vibrant Red with White Text */
+            --playing-bg: #ff3366; /* Vibrant Red/Pink */
+            --playing-text: white;
+            --playing-border: white;
+            
+            /* TELEGRAM */
+            --telegram-bg: #0088cc; 
+            --telegram-text: white;
+            --telegram-circle-bg: white; 
+        }
+
+        /* --- 2. Base & Body Styles --- */
+        body {
+            width: 100%;
+            margin: 0;
+            background: var(--bg-primary);
+            padding-top: 260px; 
+            padding-bottom: 60px;
+        }
+        a:link, a:visited {
+            color: var(--link-color); /* Default link color set to Gold */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        a:hover, a:active {
+            color: var(--link-hover);
+        }
+
+        .tel {
+            display: none !important;
+        }
+        
+        /* --- 3. Fixed Top Iframe Player --- */
+        #player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 220px;
+            background-color: black;
+            z-index: 1000;
+        }
+        #video-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none; 
+        }
+        /* Placeholder styling before video is loaded */
+        #player-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 16px;
+            background-color: #111;
+        }
+        
+        /* --- 4. Fixed Header (Search Bar and Telegram Button) --- */
+        .fixed {
+            position: fixed;
+            width: 100%;
+            top: 220px; 
+            background: var(--header-bg); /* Black Header */
+            z-index: 999; 
+            padding-bottom: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding-top: 5px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Search Input */
+        #search-input {
+            width: 70%; 
+            max-width: none; 
+            padding: 5px 10px;
+            margin-top: 0; 
+            margin-right: 5px; 
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+            color: black;
+            font-size: 14px;
+            box-sizing: border-box;
+            height: 34px; 
+        }
+        
+        /* Telegram Button Style - FIXED FOR INLINE-BLOCK TEXT */
+        .telegram-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--telegram-bg);
+            color: var(--telegram-text);
+            text-decoration: none;
+            padding: 7px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
+            height: 34px;
+            box-sizing: border-box;
+            margin-top: 0; 
+        }
+        
+        /* Telegram Icon Container (White Circle) */
+        .telegram-btn .icon-circle {
+            width: 24px; 
+            height: 24px;
+            background-color: var(--telegram-circle-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 5px;
+        }
+        /* Telegram Icon: Changed fill color to blue (from blue background) */
+        .telegram-btn .icon-circle svg {
+            width: 16px; 
+            height: 16px;
+            fill: var(--telegram-bg); 
+            margin-right: 0;
+        }
+        
+        /* FIX: Ensures JOIN text is inline with icon */
+        .telegram-btn span {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .fixed .nav-tabs {
+            display: none !important;
+        }
+        
+        /* --- 5. Tab Content and Padding --- */
+        .tab-content {
+            background: var(--bg-secondary) !important;
+            padding-top: 15px !important; 
+            padding-left: 8px; 
+            padding-right: 4px;
+            padding-bottom: 10px !important; 
+            width: 100% !important;
+            float: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .tab-pane {
+            border: 1px solid #fff !important;
+            background-color: var(--bg-secondary) !important; /* Use main background color */
+            text-align: center;
+            padding: 5px 0 0 0;
+        }
+
+        /* --- 6. Channel Cards (.rsz) - 3 in One Row --- */
+        .rsz {
+            width: 31%; 
+            display: inline-flex; 
+            background: var(--channel-bg); /* Deep Indigo/Blue */
+            line-height: 1.2;
+            color: var(--link-color); /* Gold text (fallback) */
+            font-size: 10px;
+            border-radius: 4px;
+            margin: 0.5%; 
+            height: 40px; 
+            font-weight: bold;
+            border: 1px solid var(--channel-border);
+            box-shadow: inset 0px 0px 3px 2px rgba(142, 139, 139, 0.5);
+            padding: 7px 3px;
+            text-align: center;
+            box-sizing: border-box;
+            vertical-align: middle;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: pointer; 
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Style for the currently playing channel (VIBRANT RED/WHITE) */
+        .rsz.playing {
+            background: var(--playing-bg); /* RED background */
+            border: 2px solid var(--playing-border); /* WHITE border to highlight */
+            color: var(--playing-text); /* WHITE text color (fallback)*/
+            box-shadow: 0 0 10px 1px var(--playing-bg); /* Add a glow effect */
+        }
+
+        .rsz a {
+            display: flex; 
+            width: 100%;
+            height: 100%;
+            justify-content: center; 
+            align-items: center; 
+            text-transform: uppercase; 
+        }
+        /* Default link color is Gold */
+        .rsz a {
+             color: var(--link-color);
+        }
+        /* Make the playing link text white */
+        .rsz.playing a {
+             color: var(--playing-text); 
+        }
+
+        .rsz a p {
+             margin: 0; 
+             text-align: center; 
+        }
+        
+        /* --- 7. Fixed Bottom Navigation Bar --- */
+        .bottom-nav { 
+            display: flex; 
+            justify-content: space-around; 
+            background-color: var(--nav-bg); 
+            padding: 5px 0; 
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            bottom: 0; 
+            left: 0;
+            right: 0;
+            width: 100%; 
+            z-index: 100;
+            height: 60px; 
+            border-top: 2px solid var(--nav-icon-active);
+        }
+
+        .bottom-nav button { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1; 
+            background: none; 
+            border: none; 
+            color: var(--nav-icon-color); 
+            padding: 5px 0; 
+            cursor: pointer; 
+            font-size: 10px; 
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .bottom-nav button svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--nav-icon-color);
+            margin-bottom: 2px;
+            transition: fill 0.3s;
+        }
+        
+        .bottom-nav button.active { 
+            color: var(--nav-icon-active); 
+            font-weight: 700;
+        }
+        .bottom-nav button.active svg {
+            fill: var(--nav-icon-active);
+        }
+
+        .content-table {
+            display: none !important;
+        }
+
+        /* Disclaimer text styling */
+        .tab-content > font {
+            display: block;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #eee;
+            color: #333;
+            font-size: 10px !important;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+ 
+    <div id="player-container">
+         <iframe id="video-iframe" src="about:blank" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+            loading="lazy" 
+            allowfullscreen 
+            style="overflow: hidden; border: none; width: 100%; height: 100%;" 
+        ></iframe>
+        <div id="player-placeholder">Click a channel to start streaming...</div>
+    </div>
+    
+    <div class="fixed">
+        <ul class="nav nav-tabs" role="tablist" id="myTab">
+            <li class="active" id="tab-zero"><a href="#zero" role="tab" data-toggle="tab"><b>ALL TV</b></a></li>
+            <li id="tab-one"><a href="#one" role="tab" data-toggle="tab"><b>MOVIES </b></a></li>
+            <li id="tab-two"><a href="#two" role="tab" data-toggle="tab"><b>MUSIC</b></a></li>
+            <li id="tab-three"><a href="#three" role="tab" data-toggle="tab"><b>KIDS / LIFESTYLE</b></a></li> 
+            <li id="tab-four"><a href="#four" role="tab" data-toggle="tab"><b>NEWS</b></a></li>
+            <li id="tab-six"><a href="#six" role="tab" data-toggle="tab"><b>BHAKTI</b></a></li>
+        </ul>
+        <div style="display: flex; align-items: center; width: 90%; max-width: 500px; padding: 5px 0;">
+            <input type="text" id="search-input" placeholder="Search Channels" onkeyup="searchChannels()">
+            <a href="https://t.me/waptvgo" target="_blank" class="telegram-btn">
+                 <div class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm3.32 7.3l-2.03 9.4c-.16.73-.59.94-1.2.62l-2.61-1.93-1.26 1.22c-.17.16-.31.3-.64.3-.23 0-.48-.1-.65-.24L7.8 15.65l-1.3-4.43 12.1-.72c.6-.04.75-.41.27-.86z"/></svg>
+                 </div>
+                <span></span> </a>
+        </div>
+        </div>
+    
+    <div class="tab-content" id="content-wrapper">
+        <div class="tab-pane active" id="zero">
+            <main id="app0"></main>
+        </div>
+        <div class="tab-pane" id="one">
+            <main id="app1"></main>
+        </div>
+        <div class="tab-pane" id="two">
+            <main id="app2"></main>
+        </div>
+        <div class="tab-pane" id="three">
+            <main id="app3"></main>
+        </div>
+        <div class="tab-pane" id="four">
+            <main id="app4"></main>
+        </div>
+        <div class="tab-pane" id="six">
+            <main id="app6"></main>
+        </div>
+        
+        <font size="3px">This site is not affiliated with any television channel. All content is copyright of their respective owners. We cannot accept any responsibility for the content on this site. We cannot control or influence any audiovisual content on this site. Viewers are expected to be wise in processing the information obtained.All links provided on this site are indexed from third-party websites. We do not host any content:- Wapgotube@gmail.com </font>
+    </div>
+    
+    <div class="bottom-nav" id="bottom-nav">
+        <button data-target="#zero" class="active">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            ALL TV
+        </button>
+        <button data-target="#one">
+            <svg viewBox="0 0 24 24"><path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM6 17v-4h2v4H6zm10 0v-4h2v4h-2z"/></svg>
+            MOVIES
+        </button>
+        <button data-target="#two">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            MUSIC
+        </button>
+        <button data-target="#three">
+            <svg viewBox="0 0 24 24"><path d="M12 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.46.06-.9.13-1.33C6.11 9.4 8.78 7.5 12 7.5c3.22 0 5.89 1.9 7.87 5.17.07.43.13.87.13 1.33 0 4.41-3.59 8-8 8z"/></svg>
+            KIDS/LIFE
+        </button>
+        <button data-target="#four">
+            <svg viewBox="0 0 24 24"><path d="M21 4H3c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM3 19V6h18v13H3zm13-5h-3v3h-2v-3H8v-2h3V9h2v3h3v2z"/></svg>
+            NEWS
+        </button>
+        <button data-target="#six">
+            <svg viewBox="0 0 24 24"><path d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4.5 9.5c0-1.11-.63-2.1-1.5-2.6.72-.45 1.2-1.24 1.2-2.15V9.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v1.25c0 .76-.44 1.42-1.09 1.76l-.7.34c-1.12.54-1.8 1.6-1.8 2.76V17h9v-1.5z"/></svg>
+            BHAKTI
+        </button>
+    </div>
+    
+    <script src="https://waptv.github.io/entertainment.js"></script>
+    <script src="https://waptv.github.io/vpnmpd.js"></script>
+    <script src="https://waptv.github.io/vpnmp4.js"></script>
+    <script src="https://waptv.github.io/vpn.js"></script>
+    <script src="https://waptv.github.io/movies.js"></script>
+    <script src="https://waptv.github.io/music.js"></script>
+    <script src="https://waptv.github.io/kids.js"></script>
+    <script src="https://waptv.github.io/news.js"></script>
+    <script>
+        // --- Centralized Function to Sort and Render Channels ---
+        function renderAndSortChannels(json, targetSelector) {
+            // 1. Sort the channels alphabetically by name
+            json.sort((a, b) => a.name.localeCompare(b.name));
+
+            // 2. Generate the HTML
+            const html = json.map(function(item) {
+                // Ensure data-name and channel structure is correct for CSS/JS
+                return " <div align='center' class='rsz' data-group='p1' data-name='"+item.name+"'><a  target='frame' href='https://tvgotk.github.io/p1?url="+item.id+"'><p>"+item.name+"</p></a></div>";
+            }).join("");
+            
+            // 3. Clear existing content and insert sorted HTML
+            const targetElement = document.querySelector(targetSelector);
+            if (targetElement) {
+                targetElement.innerHTML = ''; 
+                targetElement.insertAdjacentHTML("beforeend", html);
+                return true;
+            }
+            return false;
+        }
+
+        // --- LIFESTYLE Data Fetch (Now includes sorting) ---
+        function getData_lifestyle() {
+            fetch("https://raw.githubusercontent.com/Shubhamkur/Iptv/refs/heads/main/lifestyle")
+                .then(res => res.json())
+                .then(json => {
+                    renderAndSortChannels(json, "#app3");
+                })
+                .catch(error => { console.error("Error loading lifestyle data:", error); });
+        }
+        getData_lifestyle();
+    </script>
+    
+    <script src="https://waptv.github.io/bhakti.js"></script>
+    
+    <script> 
+        
+        // **GLOBAL STATE FOR NAVIGATION**
+        let allChannels = [];
+        let currentChannelIndex = -1;
+        let currentlyPlayingElement = null; 
+
+        // --- 5. Iframe Player Function ---
+        function playChannel(url, element) {
+            const iframe = document.getElementById('video-iframe');
+            const placeholder = document.getElementById('player-placeholder');
+            
+            placeholder.style.display = 'none';
+            iframe.style.display = 'block';
+            iframe.src = url; 
+
+            // --- Channel Highlighting Logic ---
+            if (currentlyPlayingElement) {
+                // 1. Remove 'playing' class from the previous channel
+                currentlyPlayingElement.classList.remove('playing');
+            }
+            
+            if (element) {
+                // Find the parent channel card (.rsz) of the clicked link (element)
+                const channelCard = element.closest('.rsz'); 
+                
+                // 2. Add 'playing' class to the current channel
+                if (channelCard) {
+                    channelCard.classList.add('playing');
+                    // 3. Update the tracking variable
+                    currentlyPlayingElement = channelCard; 
+                }
+
+                // Update current channel index for search/autoplay logic
+                const visibleChannels = Array.from(document.querySelectorAll('.tab-pane.active .rsz')).filter(
+                    c => c.style.display !== 'none'
+                );
+                currentChannelIndex = visibleChannels.indexOf(channelCard);
+                allChannels = visibleChannels; 
+            } else {
+                // If element is null (e.g., failed search or placeholder shown), clear the tracking
+                currentlyPlayingElement = null;
+            }
+        }
+        
+        // --- Function to sort all rendered channels after all scripts run ---
+        function globalSortAndAutoPlay() {
+            const tabPanes = document.querySelectorAll('.tab-pane main');
+            tabPanes.forEach(main => {
+                const channels = Array.from(main.querySelectorAll('.rsz'));
+                
+                if (channels.length > 0) {
+                    // Sort the actual DOM elements based on data-name
+                    channels.sort((a, b) => {
+                        const nameA = a.getAttribute('data-name').toLowerCase();
+                        const nameB = b.getAttribute('data-name').toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+
+                    // Append the sorted elements back to the parent
+                    channels.forEach(channel => main.appendChild(channel));
+                }
+            });
+
+            // Auto-play the first channel on the initial active tab (#zero)
+            autoPlayFirstChannel('#zero');
+        }
+
+        // --- Function to Auto Play First Channel in a Tab ---
+        function autoPlayFirstChannel(tabId) {
+            // Find the first channel's link element within the specified tab
+            const firstChannelLink = document.querySelector(`${tabId} .rsz a`);
+            
+            if (firstChannelLink) {
+                const url = firstChannelLink.getAttribute('href');
+                playChannel(url, firstChannelLink);
+            } else {
+                // Show placeholder if no channels are found
+                document.getElementById('player-placeholder').style.display = 'flex';
+                document.getElementById('video-iframe').style.display = 'none';
+                
+                if (currentlyPlayingElement) {
+                    currentlyPlayingElement.classList.remove('playing');
+                }
+                currentlyPlayingElement = null;
+            }
+        }
+        
+        // --- 6. Delegated Event Listener for Channel Clicks ---
+        document.getElementById('content-wrapper').addEventListener('click', function(e) {
+            const linkElement = e.target.closest('.rsz a');
+            
+            if (linkElement) {
+                e.preventDefault();
+                
+                const fullPlayerUrl = linkElement.getAttribute('href'); 
+                
+                if (fullPlayerUrl && fullPlayerUrl !== '#') {
+                    playChannel(fullPlayerUrl, linkElement);
+                }
+            }
+        });
+
+        // --- 7. Search Function ---
+        function searchChannels() { 
+            var input = document.getElementById('search-input').value.toLowerCase(); 
+            var tabPane = document.querySelector('.tab-pane.active');
+            var channels = tabPane ? tabPane.querySelectorAll('.rsz') : [];
+
+            let foundFirst = false;
+            let firstChannelLink = null;
+            
+            channels.forEach(function(channel) { 
+                var name = channel.getAttribute('data-name'); 
+                if (name && name.toLowerCase().includes(input)) { 
+                    channel.style.display = 'inline-flex';
+                    if (!foundFirst) {
+                         firstChannelLink = channel.querySelector('a');
+                         foundFirst = true;
+                    }
+                } else { 
+                    channel.style.display = 'none'; 
+                } 
+            }); 
+            
+            // Re-run auto-play on the first visible channel after search
+            if (firstChannelLink) {
+                 const firstChannelUrl = firstChannelLink.getAttribute('href');
+                 playChannel(firstChannelUrl, firstChannelLink);
+            } else {
+                // If search returns no results, clear player and active channel status
+                document.getElementById('player-placeholder').style.display = 'flex';
+                document.getElementById('video-iframe').style.display = 'none';
+                
+                if (currentlyPlayingElement) {
+                    currentlyPlayingElement.classList.remove('playing');
+                }
+                currentlyPlayingElement = null;
+                currentChannelIndex = -1;
+                allChannels = [];
+            }
+        } 
+        window.searchChannels = searchChannels;
+
+        // --- 8. Bottom Navigation Logic (Now includes Auto-Play) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.bottom-nav button');
+            
+            // Use a slight delay to ensure all external scripts have loaded their content and sort
+            setTimeout(globalSortAndAutoPlay, 1000); 
+
+            function switchTab(targetId) {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                
+                const bootstrapTabElement = document.querySelector(`#myTab a[href="${targetId}"]`);
+                if (bootstrapTabElement) {
+                    $(bootstrapTabElement).tab('show');
+                    
+                    const customButton = document.querySelector(`.bottom-nav button[data-target="${targetId}"]`);
+                    if(customButton) {
+                        customButton.classList.add('active');
+                    }
+                    
+                    // Auto-play the first channel of the new tab
+                    setTimeout(() => autoPlayFirstChannel(targetId), 50); 
+                }
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    switchTab(targetId);
+                });
+            });
+
+            // Initial load: Set the first tab active
+            switchTab('#zero');
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
