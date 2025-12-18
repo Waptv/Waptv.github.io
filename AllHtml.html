@@ -1,14 +1,7 @@
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> TV4WAP LIVE4WAP WAPTVGO</title>
+    <title> TV4WAP LIVE4WAP WAPTV TVGOTK</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
@@ -355,6 +348,7 @@
         </div>
         <div class="tab-pane" id="three">
             <main id="app3"></main>
+            
         </div>
         <div class="tab-pane" id="four">
             <main id="app4"></main>
@@ -393,49 +387,16 @@
         </button>
     </div>
     
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/entertainment.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/vpnmpd.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/vpnmp4.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/vpn.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/movies.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/music.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/kids.js"></script>
-    <script src="https://raw.githubusercontent.com/Waptv/iptvdata/refs/heads/main/news.js"></script>
-    <script>
-        // --- Centralized Function to Sort and Render Channels ---
-        function renderAndSortChannels(json, targetSelector) {
-            // 1. Sort the channels alphabetically by name
-            json.sort((a, b) => a.name.localeCompare(b.name));
-
-            // 2. Generate the HTML
-            const html = json.map(function(item) {
-                // Ensure data-name and channel structure is correct for CSS/JS
-                return " <div align='center' class='rsz' data-group='p1' data-name='"+item.name+"'><a  target='frame' href='https://tvgotk.github.io/p1?url="+item.id+"'><p>"+item.name+"</p></a></div>";
-            }).join("");
-            
-            // 3. Clear existing content and insert sorted HTML
-            const targetElement = document.querySelector(targetSelector);
-            if (targetElement) {
-                targetElement.innerHTML = ''; 
-                targetElement.insertAdjacentHTML("beforeend", html);
-                return true;
-            }
-            return false;
-        }
-
-        // --- LIFESTYLE Data Fetch (Now includes sorting) ---
-        function getData_lifestyle() {
-            fetch("https://raw.githubusercontent.com/Shubhamkur/Iptv/refs/heads/main/lifestyle")
-                .then(res => res.json())
-                .then(json => {
-                    renderAndSortChannels(json, "#app3");
-                })
-                .catch(error => { console.error("Error loading lifestyle data:", error); });
-        }
-        getData_lifestyle();
-    </script>
-    
-    <script src="https://waptv.github.io/bhakti.js"></script>
+    <script src="https://waptv.github.io/iptvdata/entertainment.js"></script>
+    <script src="https://waptv.github.io/iptvdata/vpnmpd.js"></script>
+    <script src="https://waptv.github.io/iptvdata/vpnmp4.js"></script>
+    <script src="https://waptv.github.io/iptvdata/vpn.js"></script>
+    <script src="https://waptv.github.io/iptvdata/movies.js"></script>
+    <script src="https://waptv.github.io/iptvdata/music.js"></script>
+    <script src="https://waptv.github.io/iptvdata/kids.js"></script>
+    <script src="https://waptv.github.io/iptvdata/lifestyle.js"></script>
+<script src="https://waptv.github.io/iptvdata/news.js"></script>
+     <script src="https://waptv.github.io/iptvdata/bhakti.js"></script>
     
     <script> 
         
@@ -618,8 +579,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
